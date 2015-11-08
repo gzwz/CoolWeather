@@ -81,6 +81,9 @@ public class ChooseAreaActivity extends Activity {
 				// TODO Auto-generated method stub
 				if (currentLevel == LEVEL_PROVINCE) {
 					selectedProvince = provinceList.get(index);
+					queryCities();
+				}else if (currentLevel == LEVEL_CITY) {
+					selectedCity = cityList.get(index);
 					queryCounties();
 				}
 			}
@@ -111,7 +114,7 @@ public class ChooseAreaActivity extends Activity {
 	 * 查询选中的省内的所有城市，优先从数据库查询，若没有，再到服务器去查询
 	 */
 	private void queryCities(){
-		cityList = coolWeatherDB.loadCities(selectedCity.getId());
+		cityList = coolWeatherDB.loadCities(selectedProvince.getId());
 		if (cityList.size() > 0 ) {
 			dataList.clear();
 			for (City city : cityList) {
@@ -146,8 +149,8 @@ public class ChooseAreaActivity extends Activity {
 		
 	}
 	
-	/*根据传入代号和类型从服务器上查询省市县数据
-	 * 
+	/*
+	 * 根据传入代号和类型从服务器上查询省市县数据
 	 */
 	private void queryFromServer(final String code, final String type){
 		String address;
@@ -223,6 +226,15 @@ public class ChooseAreaActivity extends Activity {
 	/*
 	 * 捕获Back按键，
 	 */
+	public void onBackPressed(){
+		if (currentLevel == LEVEL_COUNTY) {
+			queryCities();
+		}else if (currentLevel == LEVEL_CITY) {
+			queryProvinces();
+		}else {
+			finish();
+		}
+	}
 	
 }
 
