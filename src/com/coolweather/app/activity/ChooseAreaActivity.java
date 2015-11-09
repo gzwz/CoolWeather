@@ -41,6 +41,10 @@ public class ChooseAreaActivity extends Activity {
 	private CoolWeatherDB coolWeatherDB;
 	private List<String> dataList = new ArrayList<String>();
 	/*
+	 * 是否从WeatherActivity 中跳转过来
+	 */
+	private boolean isFromWeatherActivity;
+	/*
 	 * 省
 	 */
 	private List<Province> provinceList;
@@ -69,8 +73,11 @@ public class ChooseAreaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if (prefs.getBoolean("city_selected", false)) {
+		//已经选择了城市且不是冲WeatherActivity跳转过来，才会字节跳转到WeatherActivity
+		
+		if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
 			Intent intent = new Intent(this,WeatherActivity.class);
 			startActivity(intent);
 			finish();
@@ -250,6 +257,10 @@ public class ChooseAreaActivity extends Activity {
 		}else if (currentLevel == LEVEL_CITY) {
 			queryProvinces();
 		}else {
+			if (isFromWeatherActivity) {
+				Intent intent = new Intent(this,WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
